@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz Relâmpago</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3efff;--surface:#fff;--text:#1b1340;--muted:#6b6393;--accent:#ffc928;--accent-text:#1b1340;--ok:#13a56b;--bad:#e5384f;--line:#d9d1f5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1340;--surface:#2a1f63;--text:#f5f2ff;--muted:#b4abe0;--line:#43377f;--ok:#3ddc97;--bad:#ff6b85}}
+:root[data-skin="sol"]{--bg:#2b0f2e;--surface:#4a1942;--text:#fff1e6;--muted:#f2b8a2;--line:#7a2c5c;--accent:#ff8a3d;--accent-text:#2b0f2e;--ok:#5be3a1;--bad:#ff7a8a}
+:root[data-skin="mata"]{--bg:#0f2a1d;--surface:#17402b;--text:#eaffe0;--muted:#a3cfa0;--line:#2c6a46;--accent:#b6f26b;--accent-text:#0f2a1d;--ok:#5be3a1;--bad:#ff7a8a}
+:root[data-skin="mar"]{--bg:#062a3a;--surface:#0b4560;--text:#e6f8ff;--muted:#9bcbe0;--line:#17688c;--accent:#4fd1ff;--accent-text:#062a3a;--ok:#5be3a1;--bad:#ff7a8a}
+:root[data-skin="doce"]{--bg:#fff0f6;--surface:#fff;--text:#5a2340;--muted:#a9658a;--line:#f7c6dc;--accent:#ff8fb8;--accent-text:#5a2340;--ok:#13a56b;--bad:#d62f52}
+:root[data-skin="ouro"]{--bg:#0b0b0b;--surface:#1a1a1a;--text:#f5e9c8;--muted:#a89868;--line:#3a3320;--accent:#d4af37;--accent-text:#0b0b0b;--ok:#6fdc9a;--bad:#ff6b7a}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;justify-content:center}
+main{width:100%;max-width:520px;padding:18px 18px 36px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;color:var(--muted)}
+.coin{background:var(--surface);border:2px solid var(--line);border-radius:99px;padding:6px 14px;color:var(--text);font-weight:800}
+button{font:inherit;cursor:pointer;color:inherit}
+.chip{border:2px solid var(--line);background:var(--surface);color:var(--text);border-radius:99px;padding:6px 14px;font-weight:700}
+.chip.on{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+.chip:disabled{opacity:.35;cursor:default}
+h1{font-size:clamp(3rem,16vw,5rem);line-height:.92;margin:10px 0 0;font-weight:800;letter-spacing:-.03em}
+h1 span{display:block;color:var(--accent)}
+h2{font-size:1.7rem;margin:4px 0;font-weight:800;letter-spacing:-.02em}
+.lead{font-size:1.05rem;color:var(--muted);margin:0;max-width:36ch}
+.go{padding:16px;border:0;border-radius:16px;background:var(--accent);color:var(--accent-text);font-weight:800;font-size:1.15rem;width:100%}
+.go.alt{background:var(--surface);color:var(--text);border:2px solid var(--line)}
+.opt:focus-visible,.go:focus-visible,.chip:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stats div,.row{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px}
+.stats b{display:block;font-size:1.4rem}
+.stats small{color:var(--muted)}
+.bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:var(--accent);transform-origin:left}
+.bar i.low{background:var(--bad)}
+.q{font-size:1.5rem;line-height:1.2;font-weight:800;margin:6px 0 2px;letter-spacing:-.01em}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;padding:15px 16px;border-radius:16px;border:2px solid var(--line);background:var(--surface);color:var(--text);font-weight:700;font-size:1.05rem}
+.opt:active{transform:scale(.98)}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 22%,var(--surface))}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 22%,var(--surface))}
+.opt.gone{opacity:.25}
+.opt:disabled{cursor:default}
+.life{display:flex;flex-wrap:wrap;gap:8px}
+.fb{min-height:1.4em;font-weight:700}
+.cat{display:flex;justify-content:space-between;align-items:center;text-align:left;padding:16px;border-radius:16px;border:2px solid var(--line);background:var(--surface);color:var(--text);font-weight:800;font-size:1.1rem;width:100%}
+.cat small{color:var(--muted);font-weight:500}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.row p{margin:0}.row .d{color:var(--muted);font-size:.92rem}
+.buy{border:0;border-radius:12px;background:var(--accent);color:var(--accent-text);font-weight:800;padding:10px 14px;white-space:nowrap}
+.buy:disabled{opacity:.35;cursor:default}
+.big{font-size:clamp(4rem,22vw,6.5rem);font-weight:800;line-height:1;margin:0;letter-spacing:-.04em}
+.sw{width:22px;height:22px;border-radius:50%;display:inline-block;vertical-align:-5px;margin-right:8px;border:2px solid var(--line)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+var Q=[["Qual é o gás mais abundante na atmosfera da Terra?",["Oxigênio","Nitrogênio","Gás carbônico","Hidrogênio"],1,1],
+["Quantos ossos tem o corpo de um adulto?",["186","206","226","256"],1,2],
+["Qual metal é líquido à temperatura ambiente?",["Mercúrio","Chumbo","Alumínio","Cobre"],0,2],
+["Qual é a fórmula da água oxigenada?",["H2O","HO2","H2O2","OH"],2,3],
+["Quem descobriu a penicilina?",["Louis Pasteur","Alexander Fleming","Marie Curie","Robert Koch"],1,3],
+["Qual é o maior país do mundo em área?",["Canadá","China","Estados Unidos","Rússia"],3,1],
+["Qual país tem formato de bota?",["Grécia","Itália","Espanha","Portugal"],1,1],
+["Qual é a capital do Canadá?",["Toronto","Vancouver","Montreal","Ottawa"],3,2],
+["Qual é o maior estado do Brasil em área?",["Pará","Mato Grosso","Amazonas","Minas Gerais"],2,2],
+["Qual é a capital da Turquia?",["Istambul","Ancara","Izmir","Antália"],1,3],
+["Quem construiu Machu Picchu?",["Maias","Astecas","Incas","Olmecas"],2,1],
+["Qual civilização construiu as pirâmides de Gizé?",["Romana","Grega","Persa","Egípcia"],3,1],
+["Quem foi o primeiro presidente do Brasil?",["Getúlio Vargas","Floriano Peixoto","Deodoro da Fonseca","Dom Pedro II"],2,2],
+["Em que ano caiu o Muro de Berlim?",["1979","1985","1989","1991"],2,2],
+["Em que ano foi proclamada a República no Brasil?",["1822","1888","1889","1891"],2,3],
+["Quem pintou A Noite Estrelada?",["Monet","Van Gogh","Dalí","Rembrandt"],1,1],
+["Quem escreveu Romeu e Julieta?",["Dante","Cervantes","Shakespeare","Molière"],2,1],
+["Quem compôs a Nona Sinfonia?",["Mozart","Beethoven","Bach","Chopin"],1,2],
+["Quem dirigiu o filme Titanic (1997)?",["Steven Spielberg","Ridley Scott","James Cameron","Christopher Nolan"],2,2],
+["Quem escreveu Grande Sertão: Veredas?",["Clarice Lispector","Guimarães Rosa","Carlos Drummond","Rachel de Queiroz"],1,3],
+["Quantos jogadores cada time tem em campo no futebol?",["9","10","11","12"],2,1],
+["Qual país sediou as Olimpíadas de 2016?",["China","Brasil","Reino Unido","Japão"],1,1],
+["Quem foi campeão da Copa do Mundo de 2014?",["Brasil","Argentina","Alemanha","Espanha"],2,2],
+["Qual é a distância oficial de uma maratona?",["21,097 km","36 km","40 km","42,195 km"],3,3],
+["Quem venceu a Copa do Mundo de 1998?",["Brasil","França","Itália","Alemanha"],1,3]];
+var CONS=[{id:"f",n:"Meio a meio",d:"Elimina duas respostas erradas",p:30},{id:"t",n:"+10 segundos",d:"Mais tempo na pergunta atual",p:25},{id:"s",n:"Pular pergunta",d:"Pula sem perder a sequência",p:40},{id:"e",n:"Escudo",d:"Se você errar, a sequência não zera",p:50}];
+var UPS=[{id:"m",n:"Bônus de moedas",d:"+25% de moedas por nível",p:[150,300,600]},{id:"t",n:"Tempo extra",d:"+3 segundos por pergunta, por nível",p:[120,240,480]}];
+var SK=[{id:"padrao",n:"Clássico",c:"#ffc928",p:0},{id:"sol",n:"Pôr do sol",c:"#ff8a3d",p:150},{id:"mata",n:"Floresta",c:"#b6f26b",p:150},{id:"mar",n:"Oceano",c:"#4fd1ff",p:200},{id:"doce",n:"Doce",c:"#ff8fb8",p:250},{id:"ouro",n:"Preto e ouro",c:"#d4af37",p:400}];
+var DEF={c:0,inv:{f:0,t:0,s:0,e:0},up:{m:0,t:0},own:["padrao"],skin:"padrao",rounds:0,hits:0,maxs:0,best:0};
+var S=JSON.parse(JSON.stringify(DEF));
+try{var r=JSON.parse(localStorage.getItem("quiz2")||"null");if(r){for(var k in r)S[k]=r[k]}}catch(e){}
+function save(){try{localStorage.setItem("quiz2",JSON.stringify(S))}catch(e){}}
+function skin(){if(S.skin==="padrao")document.documentElement.removeAttribute("data-skin");else document.documentElement.setAttribute("data-skin",S.skin)}
+var $=function(i){return document.getElementById(i)},app=$("app");
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var G={},tab="a",msg="",raf;
+function home(){cancelAnimationFrame(raf);app.innerHTML='<div class="top"><span class="coin">🪙 '+S.c+'</span><button class="chip" data-a="shop">Loja</button></div><h1>Quiz<span>Relâmpago</span></h1><p class="lead">25 perguntas de conhecimentos gerais, do fácil ao difícil. Acerte rápido, ganhe moedas e gaste na loja com ajudas, melhorias e estilos.</p><div class="stats"><div><b>'+S.rounds+'</b><small>rodadas</small></div><div><b>'+S.hits+'</b><small>acertos</small></div><div><b>'+S.maxs+'</b><small>maior sequência</small></div><div><b>'+S.best+'</b><small>recorde de moedas</small></div></div><button class="go" data-a="play">Jogar</button><button class="go alt" data-a="shop">Ir à loja</button>'}
+function play(){var qs=shuffle(Q).sort(function(a,b){return a[3]-b[3]});
+ G={qs:qs,i:0,earned:0,hits:0,streak:0,maxs:0};ask()}
+function ask(){var q=G.qs[G.i];G.locked=false;G.used={};G.lim=15000+3000*S.up.t;
+ var h='<div class="top"><span>'+(G.i+1)+'/'+G.qs.length+' · '+["","fácil","médio","difícil"][q[3]]+'</span><span>'+(G.streak>1?"🔥 "+G.streak:"")+'</span><span class="coin">+'+G.earned+' 🪙</span></div><div class="bar"><i id="tm"></i></div><p class="q" id="qq"></p><div class="opts" id="ops"></div><div class="life" id="lf"></div><div class="fb" id="fb" aria-live="polite"></div><button class="go" id="nx" style="display:none"></button>';
+ app.innerHTML=h;$("qq").textContent=q[0];
+ shuffle(q[1].map(function(t,i){return{t:t,c:i===q[2]}})).forEach(function(o){var b=document.createElement("button");b.className="opt";b.textContent=o.t;b.dataset.c=o.c?"1":"0";b.dataset.a="ans";$("ops").appendChild(b)});
+ lives();G.t0=performance.now();cancelAnimationFrame(raf);tick()}
+function lives(){var h="",any=false;CONS.slice(0,3).forEach(function(c){if(S.inv[c.id]>0){any=true;h+='<button class="chip" data-a="use" data-v="'+c.id+'"'+(G.used[c.id]||G.locked?" disabled":"")+'>'+c.n+' ×'+S.inv[c.id]+'</button>'}});
+ if(S.inv.e>0){any=true;h+='<span class="chip">🛡 Escudo ×'+S.inv.e+'</span>'}
+ $("lf").innerHTML=any?h:'<span class="lead" style="font-size:.9rem">Compre ajudas na loja para usar aqui.</span>'}
+function tick(){var left=G.lim-(performance.now()-G.t0);var b=$("tm");if(!b)return;
+ if(left<=0){b.style.transform="scaleX(0)";return ans(null)}
+ b.style.transform="scaleX("+(left/G.lim)+")";b.classList.toggle("low",left<5000);raf=requestAnimationFrame(tick)}
+function use(id){if(G.locked||G.used[id]||S.inv[id]<1)return;S.inv[id]--;G.used[id]=1;save();
+ if(id==="f"){var w=[].slice.call(document.querySelectorAll(".opt")).filter(function(o){return o.dataset.c==="0"});shuffle(w).slice(0,2).forEach(function(o){o.disabled=true;o.classList.add("gone")})}
+ if(id==="t")G.lim+=10000;
+ if(id==="s"){G.locked=true;cancelAnimationFrame(raf);return after()}
+ lives()}
+function ans(btn){if(G.locked)return;G.locked=true;cancelAnimationFrame(raf);var q=G.qs[G.i];
+ var left=Math.max(0,G.lim-(performance.now()-G.t0)),ok=btn&&btn.dataset.c==="1";
+ document.querySelectorAll(".opt").forEach(function(o){o.disabled=true;if(o.dataset.c==="1")o.classList.add("ok")});
+ var fb=$("fb");
+ if(ok){G.streak++;G.hits++;G.maxs=Math.max(G.maxs,G.streak);
+  var g=Math.round((q[3]*10+Math.round(q[3]*5*left/G.lim)+Math.min(G.streak-1,5)*2)*(1+.25*S.up.m));G.earned+=g;
+  fb.textContent="Certo! +"+g+" moedas";fb.style.color="var(--ok)"}
+ else{if(btn)btn.classList.add("bad");fb.style.color="var(--bad)";
+  if(S.inv.e>0){S.inv.e--;save();fb.textContent=(btn?"Errou":"Tempo esgotado")+", mas o escudo guardou sua sequência."}
+  else{G.streak=0;fb.textContent=btn?"Errou. A certa está em verde.":"Tempo esgotado."}}
+ after()}
+function after(){var n=$("nx");if(!n)return;n.style.display="block";n.textContent=G.i===G.qs.length-1?"Ver resultado":"Próxima";n.dataset.a="nx";n.focus();lives()}
+function end(){var perfect=G.hits===G.qs.length,bonus=perfect?Math.round(100*(1+.25*S.up.m)):0,tot=G.earned+bonus;
+ S.c+=tot;S.rounds++;S.hits+=G.hits;S.maxs=Math.max(S.maxs,G.maxs);S.best=Math.max(S.best,tot);save();
+ app.innerHTML='<p class="lead">'+(perfect?"Rodada perfeita!":G.hits>=G.qs.length*.6?"Mandou bem!":"Dá para melhorar.")+'</p><p class="big">+'+tot+'</p><p class="lead">moedas ganhas'+(bonus?" (inclui bônus de rodada perfeita)":"")+'</p><div class="stats"><div><b>'+G.hits+'/'+G.qs.length+'</b><small>acertos</small></div><div><b>'+G.maxs+'</b><small>maior sequência</small></div></div><p class="lead">Saldo: 🪙 '+S.c+'</p><button class="go" data-a="play">Jogar de novo</button><button class="go alt" data-a="shop">Gastar na loja</button><button class="go alt" data-a="home">Início</button>'}
+function shop(){var h='<div class="top"><button class="chip" data-a="home">Voltar</button><span class="coin">🪙 '+S.c+'</span></div><h2>Loja</h2><div class="life">';
+ [["a","Ajudas"],["u","Melhorias"],["s","Estilos"]].forEach(function(t){h+='<button class="chip'+(tab===t[0]?" on":"")+'" data-a="tab" data-v="'+t[0]+'">'+t[1]+'</button>'});
+ h+='</div><div class="fb">'+msg+'</div>';
+ if(tab==="a")CONS.forEach(function(c){h+='<div class="row"><div><p><b>'+c.n+'</b> · você tem '+S.inv[c.id]+'</p><p class="d">'+c.d+'</p></div><button class="buy" data-a="buy" data-v="c:'+c.id+'"'+(S.c<c.p?" disabled":"")+'>🪙 '+c.p+'</button></div>'});
+ if(tab==="u")UPS.forEach(function(u){var l=S.up[u.id],mx=l>=3;h+='<div class="row"><div><p><b>'+u.n+'</b> · nível '+l+'/3</p><p class="d">'+u.d+'</p></div><button class="buy" data-a="buy" data-v="u:'+u.id+'"'+(mx||S.c<u.p[l]?" disabled":"")+'>'+(mx?"Máximo":"🪙 "+u.p[l])+'</button></div>'});
+ if(tab==="s")SK.forEach(function(k){var own=S.own.indexOf(k.id)>-1,on=S.skin===k.id;h+='<div class="row"><div><p><span class="sw" style="background:'+k.c+'"></span><b>'+k.n+'</b></p></div><button class="buy" data-a="buy" data-v="k:'+k.id+'"'+(on||(!own&&S.c<k.p)?" disabled":"")+'>'+(on?"Em uso":own?"Usar":"🪙 "+k.p)+'</button></div>'});
+ app.innerHTML=h}
+function buy(v){var p=v.split(":"),t=p[0],id=p[1];msg="";
+ if(t==="c"){var c=CONS.filter(function(x){return x.id===id})[0];if(S.c>=c.p){S.c-=c.p;S.inv[id]++;msg=c.n+" comprado!"}}
+ if(t==="u"){var u=UPS.filter(function(x){return x.id===id})[0],l=S.up[id];if(l<3&&S.c>=u.p[l]){S.c-=u.p[l];S.up[id]++;msg=u.n+" subiu para o nível "+S.up[id]+"!"}}
+ if(t==="k"){var k=SK.filter(function(x){return x.id===id})[0];if(S.own.indexOf(id)<0&&S.c>=k.p){S.c-=k.p;S.own.push(id);msg=k.n+" desbloqueado!"}
+  if(S.own.indexOf(id)>-1){S.skin=id;skin()}}
+ save();shop()}
+var A={home:home,shop:shop,play:play,use:use,buy:buy,tab:function(v){tab=v;msg="";shop()},ans:function(v,b){ans(b)},nx:function(){G.i++;G.i>=G.qs.length?end():ask()}};
+app.addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(b&&!b.disabled)A[b.dataset.a](b.dataset.v,b)});
+skin();home();
+</script>
+</body>
+</html>
